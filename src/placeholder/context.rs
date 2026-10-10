@@ -11,15 +11,16 @@ pub struct PlaceholderContext {
     pub player: Option<PlayerContext>,
 
     #[serde(default)]
-    pub values: BTreeMap<String, serde_json::Value>
+    pub values: BTreeMap<String, serde_json::Value>,
 }
 
 /// Basic information about the requesting player.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct PlayerContext {
-    pub uuid: String,
+    #[serde(default)]
+    pub uuid: Option<String>,
     pub name: String,
 
     #[serde(default)]
-    pub locale: Option<String>
+    pub locale: Option<String>,
 }

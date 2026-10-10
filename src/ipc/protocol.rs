@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::placeholder::PlaceholderContext;
 
@@ -10,14 +10,10 @@ pub const PROTOCOL_VERSION: u16 = 1;
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum GlyphRequest {
     /// Register multiple placeholder keys for the sending plugin.
-    Register {
-        keys: Vec<String>
-    },
+    Register { keys: Vec<String> },
 
     /// Unregister specific keys owned by the sending plugin.
-    Unregister {
-        keys: Vec<String>
-    },
+    Unregister { keys: Vec<String> },
 
     /// Unregister all keys owned by the sending plugin.
     UnregisterAll,
@@ -25,51 +21,41 @@ pub enum GlyphRequest {
     /// Parse an input string through Glyph.
     Parse {
         input: String,
-        context: PlaceholderContext
+        context: PlaceholderContext,
     },
 
     /// Resolve an individual key through an expansion provider.
     Resolve {
         key: String,
-        context: PlaceholderContext
-    }
+        context: PlaceholderContext,
+    },
 }
 
 /// An IPC request envelope.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct IpcRequest {
     pub version: u16,
-    pub request: GlyphRequest
+    pub request: GlyphRequest,
 }
 
 /// Response returned by Glyph or an expansion provider.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum GlyphResponse {
-    Registered {
-        count: usize
-    },
+    Registered { count: usize },
 
-    Unregistered {
-        count: usize
-    },
+    Unregistered { count: usize },
 
-    Parsed {
-        output: String
-    },
+    Parsed { output: String },
 
-    Resolved {
-        value: Option<String>
-    },
+    Resolved { value: Option<String> },
 
-    Error {
-        message: String
-    }
+    Error { message: String },
 }
 
 /// An IPC response envelope.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct IpcResponse {
     pub version: u16,
-    pub response: GlyphResponse
+    pub response: GlyphResponse,
 }

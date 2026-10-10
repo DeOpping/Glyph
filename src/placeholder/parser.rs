@@ -5,7 +5,7 @@ use crate::namespaced_key::NamespacedKey;
 /// Unrecognized or unresolved placeholders remain unchanged.
 pub(crate) fn parse(
     input: &str,
-    mut resolver: impl FnMut(&NamespacedKey) -> Option<String>
+    mut resolver: impl FnMut(&NamespacedKey) -> Option<String>,
 ) -> String {
     let mut output = String::with_capacity(input.len());
     let mut cursor = 0;
@@ -33,7 +33,7 @@ pub(crate) fn parse(
         if let Ok(key) = token.parse::<NamespacedKey>() {
             match resolver(&key) {
                 Some(replacement) => output.push_str(&replacement),
-                None => output.push_str(original)
+                None => output.push_str(original),
             }
         } else {
             output.push_str(original);

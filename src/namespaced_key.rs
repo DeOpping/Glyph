@@ -1,20 +1,16 @@
-use std::{
-    error::Error,
-    fmt,
-    str::FromStr
-};
+use std::{error::Error, fmt, str::FromStr};
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct NamespacedKey {
     namespace: String,
-    key: String
+    key: String,
 }
 
 impl NamespacedKey {
     /// Creates a validated namespaced key.
     pub fn new(
         namespace: impl Into<String>,
-        key: impl Into<String>
+        key: impl Into<String>,
     ) -> Result<Self, NamespacedKeyError> {
         let namespace = namespace.into();
         let key = key.into();
@@ -45,7 +41,6 @@ impl NamespacedKey {
     pub fn key(&self) -> &str {
         &self.key
     }
-
 }
 
 fn is_valid_namespace_char(character: char) -> bool {
@@ -87,20 +82,18 @@ pub enum NamespacedKeyError {
     EmptyNamespace,
     EmptyKey,
     InvalidNamespace,
-    InvalidKey
+    InvalidKey,
 }
 
 impl fmt::Display for NamespacedKeyError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         let message = match self {
             Self::MissingSeparator => "expected namespace:key",
-            Self::MultipleSeparators => {
-                "a namespaced key cannot contain multiple colons"
-            },
+            Self::MultipleSeparators => "a namespaced key cannot contain multiple colons",
             Self::EmptyNamespace => "namespace cannot be empty",
             Self::EmptyKey => "key cannot be empty",
             Self::InvalidNamespace => "namespace contains invalid characters",
-            Self::InvalidKey => "key contains invalid characters"
+            Self::InvalidKey => "key contains invalid characters",
         };
 
         formatter.write_str(message)

@@ -1,46 +1,41 @@
 use std::{
     collections::HashMap,
-    sync::{Arc, RwLock}
+    sync::{Arc, RwLock},
 };
 
 use crate::namespaced_key::NamespacedKey;
 
 use super::parser;
 
-type Resolver<C> =
-    dyn Fn(&C) -> Option<String> + Send + Sync + 'static;
+type Resolver<C> = dyn Fn(&C) -> Option<String> + Send + Sync + 'static;
 
 /// Registers and resolves namespaced placeholders.
 ///
 /// 'C' represents the context supplied to each resolver.
 pub struct PlaceholderApi<C = ()> {
-    expansions: RwLock<HashMap<NamespacedKey, Arc<Resolver<C>>>>
+    expansions: RwLock<HashMap<NamespacedKey, Arc<Resolver<C>>>>,
 }
 
 impl<C> PlaceholderApi<C> {
     /// Creates an empty placeholder API.
     pub fn new() -> Self {
         Self {
-            expansions: RwLock::new(HashMap::new())
+            expansions: RwLock::new(HashMap::new()),
         }
     }
 
     /// Registers a resolver for one namespaced placeholder.
     ///
     /// Returns an error if the key is already registered.
-    pub fn register<F>(
-        &self,
-        key: NamespacedKey,
-        resolver: F
-    ) -> Result<(), RegistrationError>
+    pub fn register<F>(&self, key: NamespacedKey, resolver: F) -> Result<(), RegistrationError>
     where
-        F: Fn(&C) -> Option<String> + Send + Sync + 'static
+        F: Fn(&C) -> Option<String> + Send + Sync + 'static,
     {
         let mut expansions = self
             .expansions
             .write()
             .unwrap_or_else(|error| error.into_inner());
-        
+
         if expansions.contains_key(&key) {
             return Err(RegistrationError::AlreadyRegistered(key));
         }
@@ -102,11 +97,7 @@ impl<C> PlaceholderApi<C> {
     ///
     /// The resolver is cloned while holding the registry lock.
     /// User-provided code executes after the lock has been released.
-    pub fn resolve(
-        &self,
-        key: &NamespacedKey,
-        context: &C
-    ) -> Option<String> {
+    pub fn resolve(&self, key: &NamespacedKey, context: &C) -> Option<String> {
         let resolver = {
             let expansions = self
                 .expansions
@@ -136,14 +127,11 @@ impl PlaceholderApi<()> {
 /// Errors that occur while registering a placeholder.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum RegistrationError {
-    AlreadyRegistered(NamespacedKey)
+    AlreadyRegistered(NamespacedKey),
 }
 
 impl std::fmt::Display for RegistrationError {
-    fn fmt(
-        &self,
-        formatter: &mut std::fmt::Formatter<'_>
-    ) -> std::fmt::Result {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::AlreadyRegistered(key) => {
                 write!(formatter, "placeholder '{key}' is already registered")
