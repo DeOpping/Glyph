@@ -1,14 +1,9 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+pub mod namespaced_key;
+pub mod placeholder;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+mod plugin;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use namespaced_key::{NamespacedKey, NamespacedKeyError};
+pub use placeholder::{PlaceholderApi, RegistrationError};
+
+pumpkin_plugin_api::register_plugin!(plugin::GlyphPlugin);
