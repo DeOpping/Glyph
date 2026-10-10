@@ -97,6 +97,27 @@ impl<C> PlaceholderApi<C> {
             resolver.and_then(|resolver| resolver(context))
         })
     }
+
+    /// Resolves one specific placeholder.
+    ///
+    /// The resolver is cloned while holding the registry lock.
+    /// User-provided code executes after the lock has been released.
+    pub fn resolve(
+        &self,
+        key: &NamespacedKey,
+        context: &C
+    ) -> Option<String> {
+        let resolver = {
+            let expansions = self
+                .expansions
+                .read()
+                .unwrap_or_else(|error| error.into_inner());
+
+            expansions.get(key).cloned()
+        };
+
+        resolver.and_then(|resolver| resolver(context))
+    }
 }
 
 impl<C> Default for PlaceholderApi<C> {

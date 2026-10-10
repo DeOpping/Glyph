@@ -1,6 +1,8 @@
+pub mod ipc;
 pub mod namespaced_key;
 pub mod placeholder;
 
+mod expansion;
 mod plugin;
 
 pub use namespaced_key::{NamespacedKey, NamespacedKeyError};

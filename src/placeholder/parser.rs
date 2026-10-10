@@ -3,7 +3,7 @@ use crate::namespaced_key::NamespacedKey;
 /// Parses input and resolves each valid namespaced placeholder.
 ///
 /// Unrecognized or unresolved placeholders remain unchanged.
-pub(super) fn parse(
+pub(crate) fn parse(
     input: &str,
     mut resolver: impl FnMut(&NamespacedKey) -> Option<String>
 ) -> String {

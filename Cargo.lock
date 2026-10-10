@@ -73,6 +73,8 @@ name = "glyph"
 version = "26.1.0-pre.1"
 dependencies = [
  "pumpkin-plugin-api",
+ "serde",
+ "serde_json",
  "tracing",
 ]
 
